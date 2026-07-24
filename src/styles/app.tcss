@@ -1,0 +1,11 @@
+#start-prompt {
+    align: center middle;
+    height: 6;
+    width: 100%;
+}
+
+.prompt-text {
+    color: #6b6b6b;
+    margin: 0 1;
+}
+

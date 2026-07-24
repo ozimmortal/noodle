@@ -23,7 +23,6 @@ class BrandHeader(Horizontal):
     BrandHeader{
         content-align: center middle;
         margin-left: 2;
-        border: solid red;
         height: 6;
     }
     .gold-card {
@@ -45,7 +44,6 @@ class BrandHeader(Horizontal):
     }
 
     #app-title {
-        
         color: #f2f2f2;
         text-style: bold;
     }
