@@ -5,7 +5,8 @@ from components.logo import BrandHeader
 from components.options import OptionsTab
 from textual.widgets import Label 
 from textual.widget import Widget
-
+from textual.binding import Binding
+import webbrowser
 
 class Button(Widget):
 
@@ -63,6 +64,11 @@ footer_elements = [["tab", "cycle options"], ["← →", "change value"],  ["ctr
 
 
 class HomeScreen(Screen):
+
+    BINDINGS = [
+        Binding("ctrl+l", "redirect_link", "Redirect Link"),
+    ]
+
     def compose(self):
        
         yield BrandHeader()
@@ -74,6 +80,8 @@ class HomeScreen(Screen):
         yield Footer(elements=footer_elements)
 
     def _on_key(self, event):
-
         if event.key == "space":
             pass
+
+    def action_redirect_link(self) -> None:
+        webbrowser.open("https://github.com/ozimmortal/belly")
