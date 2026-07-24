@@ -1,6 +1,7 @@
 from textual.widgets import Static
 from textual.containers import Horizontal
 
+
 class Footer(Static):
 
     DEFAULT_CSS = """
@@ -33,11 +34,14 @@ class Footer(Static):
 
 """
 
-    def __init__(self, elements = [], *args, **kwargs):
+    def __init__(self, elements=[], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.elements = elements
 
     def compose(self):
         with Horizontal(id="footer-row"):
             for key, description in self.elements:
-                yield Static(f"[#5B5A5A]{key}[/] · [#404040]{description}[/]", classes="footer-item")
+                yield Static(
+                    f"[#5B5A5A]{key}[/] · [#404040]{description}[/]",
+                    classes="footer-item",
+                )

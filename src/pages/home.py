@@ -3,10 +3,11 @@ from textual.screen import Screen
 from components.footer import Footer
 from components.logo import BrandHeader
 from components.options import OptionsTab
-from textual.widgets import Label 
+from textual.widgets import Label
 from textual.widget import Widget
 from textual.binding import Binding
 import webbrowser
+
 
 class Button(Widget):
 
@@ -32,8 +33,8 @@ class Button(Widget):
         height: auto;
     }
 
-    .label:hover{
-        opacity: 60%;
+    .label:hover {
+        background: #969696 50%;
     }
     """
 
@@ -48,19 +49,17 @@ class Button(Widget):
     def _on_click(self, event):
         pass
 
+
 TABS_DATA = [
-    {
-        "header" : "mode",
-        "options" : ["time", "words", "quote"]
-    },
-    {
-        "header" : "duration",
-        "options" : ["15", "30", "60", "120"]
-    }
+    {"header": "mode", "options": ["time", "words", "quote"]},
+    {"header": "duration", "options": ["15", "30", "60", "120"]},
 ]
 
-footer_elements = [["tab", "cycle options"], ["← →", "change value"],  ["ctrl+q", "quit"]]        
-
+footer_elements = [
+    ["tab", "cycle options"],
+    ["← →", "change value"],
+    ["ctrl+q", "quit"],
+]
 
 
 class HomeScreen(Screen):
@@ -70,7 +69,7 @@ class HomeScreen(Screen):
     ]
 
     def compose(self):
-       
+
         yield BrandHeader()
         yield OptionsTab(collections=TABS_DATA)
         with Horizontal(id="start-prompt"):

@@ -11,12 +11,9 @@ class BellyLogo(Static):
 
 class TitleBlock(Vertical):
     def compose(self):
-        yield Link(
-            "belly",
-            url="https://github.com/ozimmortal/belly",
-            id="app-title"
-        )
+        yield Link("belly", url="https://github.com/ozimmortal/belly", id="app-title")
         yield Static(f"v{state.APP_VERSION}", id="app-version")
+
 
 class BrandHeader(Horizontal):
     DEFAULT_CSS = """
@@ -55,6 +52,7 @@ class BrandHeader(Horizontal):
         color: #555555;
     }
 """
+
     def compose(self):
         yield BellyLogo(classes="gold-card")
         yield TitleBlock(id="title-stack")

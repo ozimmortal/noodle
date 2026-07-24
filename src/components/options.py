@@ -1,7 +1,7 @@
-from textual.widgets import Static , Select
+from textual.widgets import Static, Select, Label
 from textual.containers import Horizontal, Vertical, Container
 from textual.reactive import reactive
-from textual import events
+from textual import events, on
 from textual.widget import Widget
 from textual.message import Message
 
@@ -70,25 +70,31 @@ class LanguageSelect(Container):
 
     """
 
-    # class TabClicked(Message):
-    #     def __init__(self, tab_id: int) -> None:
-    #         super().__init__()
-    #         self.tab_id = tab_id
+    class TabClicked(Message):
+        def __init__(self, tab_id: int) -> None:
+            super().__init__()
+            self.tab_id = tab_id
 
     can_focus = True
     tab_selected = reactive(False)
 
-    def __init__(self, tab_id: int, languages: list[str] | None = None, *args, **kwargs):
+    def __init__(
+        self, tab_id: int, languages: list[str] | None = None, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.tab_id = tab_id
         self.languages = languages or []
 
     def compose(self):
         yield Static("language", classes="header")
-        yield Select(options=[(lang.capitalize(), lang) for lang in self.languages], allow_blank=False ,compact=True)
+        yield Select(
+            options=[(lang.capitalize(), lang) for lang in self.languages],
+            allow_blank=False,
+            compact=True,
+        )
 
-    # def on_click(self, event: events.Click) -> None:
-    #     self.post_message(self.TabClicked(self.tab_id))
+    def on_click(self, event: events.Click) -> None:
+        self.post_message(self.TabClicked(self.tab_id))
 
     def watch_tab_selected(self, tab_selected: bool) -> None:
         if not self.is_mounted:
@@ -98,7 +104,29 @@ class LanguageSelect(Container):
         self.set_class(tab_selected, "selected")
         self.query(Select)[0].focus()
 
-    
+
+class Option(Label):
+
+    class OptionClicked(Message):
+        def __init__(self, tabid: int, optionid: int) -> None:
+            super().__init__()
+            self.tabid = tabid
+            self.optionid = optionid
+
+    def __init__(
+        self, current_tab: int, optionid: int, option: str, cls: str, *args, **kwargs
+    ):
+        super().__init__(option, classes=cls, *args, **kwargs)
+        self.optionid = optionid
+        self.option = option
+        self.current_tab = current_tab
+
+    def _on_click(self, event):
+        self.post_message(
+            self.OptionClicked(tabid=self.current_tab, optionid=self.optionid)
+        )
+
+
 class OptionGroup(Container):
     DEFAULT_CSS = """
     OptionGroup {
@@ -146,25 +174,35 @@ class OptionGroup(Container):
     tab_selected = reactive(False)
     option_selected = reactive(0)
 
-    def __init__(self, optionid: int, header: str, options: list[str] | None = None, *args, **kwargs):
+    def __init__(
+        self,
+        tabid: int,
+        header: str,
+        options: list[str] | None = None,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.header = header
         self.options = options or []
-        self.optionid = optionid
-    
-
+        self.tabid = tabid
 
     def compose(self):
-        yield Static(self.header, classes="header selected" if self.tab_selected else "header")
+        yield Static(
+            self.header, classes="header selected" if self.tab_selected else "header"
+        )
         with Horizontal(id="option-cont"):
             for i, option in enumerate(self.options):
-                classes = "option selected" if self.tab_selected and i == self.option_selected else "option"
-                yield Static(option, classes=classes)
-                
-            
-    
+                classes = (
+                    "option selected"
+                    if self.tab_selected and i == self.option_selected
+                    else "option"
+                )
+                yield Option(
+                    current_tab=self.tabid, optionid=i, option=option, cls=classes
+                )
+
     def watch_tab_selected(self, tab_selected: bool) -> None:
-        # only touch DOM if compose() has already run
         if not self.is_mounted:
             return
         header = self.query_one(".header", Static)
@@ -173,17 +211,18 @@ class OptionGroup(Container):
 
         if tab_selected:
             self.focus()
+
     def watch_option_selected(self, option_selected: int) -> None:
         if not self.is_mounted:
             return
         self._refresh_option_classes()
-        
 
     def _refresh_option_classes(self) -> None:
         options = self.query(".option")
         for i, opt in enumerate(options):
             opt.set_class(i == self.option_selected, "selected")
-        
+
+
 class OptionsTab(Widget):
     DEFAULT_CSS = """
     OptionsTab {
@@ -191,33 +230,35 @@ class OptionsTab(Widget):
         content-align: center middle;
     }
     OptionsTab > Horizontal {
-        align: center middle;  /* Center content horizontally and vertically */
-        width: 100%;           /* Allow it to center as a collective block */
+        align: center middle;  
+        width: 100%;         
         height: 100%;
     }
     """
 
-    can_focus = True  
+    can_focus = True
     current_tab = reactive(0)
 
     def __init__(self, collections: list[dict] | None = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.collections = collections or []
-        self.languages = ["english", "french", "spanish"] # later on move the available languages in settings.json
+        self.languages = [
+            "english",
+            "french",
+            "spanish",
+        ]  # later on move the available languages in settings.json
 
     def _on_mount(self, event) -> None:
         self.focus()
         if self.collections:
-            self.select_tab(self.query(OptionGroup),0,0)
-          
-        
+            self.select_tab(self.query(OptionGroup), 0, 0)
 
     def compose(self):
         with Horizontal():
             for key, collection in enumerate(self.collections):
                 header, options = collection["header"], collection["options"]
-                yield OptionGroup(header=header, options=options, optionid=key)
-            
+                yield OptionGroup(header=header, options=options, tabid=key)
+
             yield LanguageSelect(languages=self.languages, tab_id=len(self.collections))
 
     def _on_key(self, event: events.Key) -> None:
@@ -228,27 +269,54 @@ class OptionsTab(Widget):
         active_group = groups[self.current_tab]
 
         if event.key == "tab":
-            event.stop()  
+            event.stop()
             old = self.current_tab
             new = (old + 1) % len(groups)
             self.select_tab(groups, new, old)
 
         elif event.key == "left":
-            if isinstance(active_group , OptionGroup) and active_group.option_selected > 0 :
+            if (
+                isinstance(active_group, OptionGroup)
+                and active_group.option_selected > 0
+            ):
                 active_group.option_selected -= 1
 
         elif event.key == "right":
-            if isinstance(active_group , OptionGroup) and active_group.option_selected < len(active_group.options) - 1 :
+            if (
+                isinstance(active_group, OptionGroup)
+                and active_group.option_selected < len(active_group.options) - 1
+            ):
                 active_group.option_selected += 1
-    
-    
-        
+
+    @on(LanguageSelect.TabClicked)
+    def handle_language_tab_click(self, msg: LanguageSelect.TabClicked) -> None:
+        groups = list(self.query(OptionGroup)) + list(self.query(LanguageSelect))
+        old = self.current_tab
+        new = msg.tab_id
+
+        if old != new:
+            groups[old].tab_selected = False
+
+        groups[new].tab_selected = True
+        self.current_tab = new
+
+    @on(Option.OptionClicked)
+    def handle_option_click(self, msg: Option.OptionClicked) -> None:
+        groups = list(self.query(OptionGroup)) + list(self.query(LanguageSelect))
+        old = self.current_tab
+        new = msg.tabid
+
+        if old != new:
+            groups[old].tab_selected = False
+
+        groups[new].tab_selected = True
+        groups[new].option_selected = msg.optionid
+        self.current_tab = new
+
+        if isinstance(groups[new], OptionGroup):
+            groups[new]._refresh_option_classes()
+
     def select_tab(self, groups, new: int, old: int) -> None:
         groups[old].tab_selected = False
         groups[new].tab_selected = True
         self.current_tab = new
-        
-        
-
-    
-    
