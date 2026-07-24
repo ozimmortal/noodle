@@ -54,7 +54,7 @@ class Button(Widget):
 TABS_DATA = [
     {"header": "mode", "options": ["time", "words", "quote"]},
     {"header": "duration", "options": ["15", "30", "60", "120"]},
-] # later on import Tabs data  from settings.json
+]  # later on import Tabs data  from settings.json
 
 footer_elements = [
     ["tab", "cycle options"],
