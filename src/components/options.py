@@ -104,6 +104,11 @@ class LanguageSelect(Container):
         self.set_class(tab_selected, "selected")
         self.query(Select)[0].focus()
 
+    @on(Select.Changed)
+    def select_changed(self, event: Select.Changed) -> None:
+        value = event.value
+        pass
+
 
 class Option(Label):
 

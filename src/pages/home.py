@@ -6,6 +6,7 @@ from components.options import OptionsTab
 from textual.widgets import Label
 from textual.widget import Widget
 from textual.binding import Binding
+from .game import GameScreen
 import webbrowser
 
 
@@ -47,13 +48,13 @@ class Button(Widget):
             yield Label(self.label, classes="label")
 
     def _on_click(self, event):
-        pass
+        self.app.push_screen(GameScreen())
 
 
 TABS_DATA = [
     {"header": "mode", "options": ["time", "words", "quote"]},
     {"header": "duration", "options": ["15", "30", "60", "120"]},
-]
+] # later on import Tabs data  from settings.json
 
 footer_elements = [
     ["tab", "cycle options"],
@@ -80,7 +81,7 @@ class HomeScreen(Screen):
 
     def _on_key(self, event):
         if event.key == "space":
-            pass
+            self.app.push_screen(GameScreen())
 
     def action_redirect_link(self) -> None:
         webbrowser.open("https://github.com/ozimmortal/belly")
