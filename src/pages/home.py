@@ -7,7 +7,8 @@ from textual.widgets import Label
 from textual.widget import Widget
 from textual.binding import Binding
 from .game import GameScreen
-import webbrowser
+from pathlib import Path
+import json, webbrowser, os
 
 
 class Button(Widget):
@@ -51,11 +52,18 @@ class Button(Widget):
         self.app.push_screen(GameScreen())
 
 
-TABS_DATA = [
-    {"header": "mode", "options": ["time", "words", "quote"]},
-    {"header": "duration", "options": ["15", "30", "60", "120"]},
-]  # later on import Tabs data  from settings.json
+current_dir = Path(__file__).parent
+settings_path = os.path.join(current_dir.parent, "data/settings.json")
+with open(settings_path, "r") as f:
+    data = json.load(f)
 
+options = data["game_options"]
+TABS_DATA = [
+    {"header": "mode", "options": options["modes"]},
+    {"header": "duration", "options": options["durations"]},
+]
+
+AVAILABLE_LANGUAGES = options["languages"]
 footer_elements = [
     ["tab", "cycle options"],
     ["← →", "change value"],
@@ -72,7 +80,7 @@ class HomeScreen(Screen):
     def compose(self):
 
         yield BrandHeader()
-        yield OptionsTab(collections=TABS_DATA)
+        yield OptionsTab(collections=TABS_DATA , languages=AVAILABLE_LANGUAGES)
         with Horizontal(id="start-prompt"):
             yield Label("press", classes="prompt-text")
             yield Button("space")

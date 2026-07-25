@@ -4,7 +4,23 @@ from textual.reactive import reactive
 from textual import events, on
 from textual.widget import Widget
 from textual.message import Message
+from pathlib import Path
+import os , json
 
+current_dir = Path(__file__).parent
+settings_path = os.path.join(current_dir.parent, "data/settings.json")
+
+def update_game_setting( key: str, value: str):
+    try :
+        with open(settings_path , "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return
+
+    data["game_settings"][key] = value
+    with open(settings_path , "w") as f:
+        json.dump(data, f, indent=4)
+    
 
 class LanguageSelect(Container):
     DEFAULT_CSS = """
@@ -106,8 +122,9 @@ class LanguageSelect(Container):
 
     @on(Select.Changed)
     def select_changed(self, event: Select.Changed) -> None:
-        value = event.value
-        pass
+        key , value = "language" , event.value
+        update_game_setting(key , value)
+        
 
 
 class Option(Label):
@@ -244,14 +261,10 @@ class OptionsTab(Widget):
     can_focus = True
     current_tab = reactive(0)
 
-    def __init__(self, collections: list[dict] | None = None, *args, **kwargs):
+    def __init__(self, collections: list[dict] | None = None, languages : list | None = None ,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.collections = collections or []
-        self.languages = [
-            "english",
-            "french",
-            "spanish",
-        ]  # later on move the available languages in settings.json
+        self.languages = languages or  []
 
     def _on_mount(self, event) -> None:
         self.focus()
@@ -285,6 +298,7 @@ class OptionsTab(Widget):
                 and active_group.option_selected > 0
             ):
                 active_group.option_selected -= 1
+                self.update_option_settings(self.current_tab , active_group.option_selected)
 
         elif event.key == "right":
             if (
@@ -292,6 +306,7 @@ class OptionsTab(Widget):
                 and active_group.option_selected < len(active_group.options) - 1
             ):
                 active_group.option_selected += 1
+                self.update_option_settings(self.current_tab , active_group.option_selected)
 
     @on(LanguageSelect.TabClicked)
     def handle_language_tab_click(self, msg: LanguageSelect.TabClicked) -> None:
@@ -318,6 +333,7 @@ class OptionsTab(Widget):
         groups[new].option_selected = msg.optionid
         self.current_tab = new
 
+        self.update_option_settings(msg.tabid , msg.optionid)
         if isinstance(groups[new], OptionGroup):
             groups[new]._refresh_option_classes()
 
@@ -325,3 +341,8 @@ class OptionsTab(Widget):
         groups[old].tab_selected = False
         groups[new].tab_selected = True
         self.current_tab = new
+
+    def update_option_settings(self, tabid:int , optionid: int):
+        key , value = self.collections[tabid]["header"] , self.collections[tabid]["options"][optionid]
+        update_game_setting(key, value)
+
