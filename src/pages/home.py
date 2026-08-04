@@ -12,7 +12,6 @@ import json, webbrowser, os
 
 
 class Button(Widget):
-
     DEFAULT_CSS = """
     Button {
         width: auto;
@@ -58,10 +57,7 @@ with open(settings_path, "r") as f:
     data = json.load(f)
 
 options = data["game_options"]
-TABS_DATA = [
-    {"header": "mode", "options": options["modes"]},
-    {"header": "duration", "options": options["durations"]},
-]
+MODES = options["modes"]
 
 AVAILABLE_LANGUAGES = options["languages"]
 footer_elements = [
@@ -80,7 +76,7 @@ class HomeScreen(Screen):
     def compose(self):
 
         yield BrandHeader()
-        yield OptionsTab(collections=TABS_DATA , languages=AVAILABLE_LANGUAGES)
+        yield OptionsTab(modes=MODES, languages=AVAILABLE_LANGUAGES)
         with Horizontal(id="start-prompt"):
             yield Label("press", classes="prompt-text")
             yield Button("space")
