@@ -1,21 +1,29 @@
 {
     "game_settings": {
-        "mode": "words",
-        "duration": "30",
+        "mode": "time",
+        "choice": 15,
         "language": "english"
     },
     "game_options": {
-        "modes": [
-            "time",
-            "words",
-            "quote"
-        ],
-        "durations": [
-            "15",
-            "30",
-            "60",
-            "120"
-        ],
+        "modes": {
+            "time": [
+                15,
+                30,
+                60,
+                120
+            ],
+            "words": [
+                15,
+                25,
+                50,
+                100
+            ],
+            "quote": [
+                "short",
+                "medium",
+                "long"
+            ]
+        },
         "languages": [
             "english",
             "french"
