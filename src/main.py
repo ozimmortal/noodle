@@ -9,8 +9,11 @@ class NoodleApp(App):
     def on_mount(self):
         self.push_screen("home")
 
+
 def main():
     app = NoodleApp()
     app.run()
+
+
 if __name__ == "__main__":
     main()

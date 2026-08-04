@@ -8,10 +8,11 @@ class GameScreen(Screen):
 
     def compose(self):
         game_settings = self.get_settings()
-        yield Static(f"mode - {game_settings["mode"]}\nchoice - {game_settings["choice"]}\nlanguage - {game_settings["language"]}")
+        yield Static(
+            f"mode - {game_settings["mode"]}\nchoice - {game_settings["choice"]}\nlanguage - {game_settings["language"]}"
+        )
 
     def get_settings(self):
-        with open(settings_path, 'r') as f:
+        with open(settings_path, "r") as f:
             data = json.load(f)
         return data["game_settings"]
-        

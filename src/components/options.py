@@ -8,7 +8,6 @@ from lib.state import settings_path
 import os, json
 
 
-
 def update_game_setting(key: str, value: str, choice=""):
     try:
         with open(settings_path, "r") as f:

@@ -51,7 +51,6 @@ class Button(Widget):
         self.app.push_screen(GameScreen())
 
 
-
 with open(settings_path, "r") as f:
     data = json.load(f)
 
