@@ -7,8 +7,8 @@ from textual.widgets import Label
 from textual.widget import Widget
 from textual.binding import Binding
 from .game import GameScreen
-from pathlib import Path
-import json, webbrowser, os
+import json, webbrowser
+from lib.state import settings_path
 
 
 class Button(Widget):
@@ -51,8 +51,7 @@ class Button(Widget):
         self.app.push_screen(GameScreen())
 
 
-current_dir = Path(__file__).parent
-settings_path = os.path.join(current_dir.parent, "data/settings.json")
+
 with open(settings_path, "r") as f:
     data = json.load(f)
 

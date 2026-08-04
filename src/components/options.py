@@ -4,11 +4,9 @@ from textual.reactive import reactive
 from textual import events, on
 from textual.widget import Widget
 from textual.message import Message
-from pathlib import Path
+from lib.state import settings_path
 import os, json
 
-current_dir = Path(__file__).parent
-settings_path = os.path.join(current_dir.parent, "data/settings.json")
 
 
 def update_game_setting(key: str, value: str, choice=""):
