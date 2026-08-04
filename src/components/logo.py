@@ -5,13 +5,13 @@ from lib import state
 
 
 class BellyLogo(Static):
-    def __init__(self, letter="b", **kwargs):
+    def __init__(self, letter="n-", **kwargs):
         super().__init__(letter, **kwargs)
 
 
 class TitleBlock(Vertical):
     def compose(self):
-        yield Link("belly", url="https://github.com/ozimmortal/belly", id="app-title")
+        yield Link("noodle...", url="https://github.com/ozimmortal/belly", id="app-title")
         yield Static(f"v{state.APP_VERSION}", id="app-version")
 
 
