@@ -16,5 +16,3 @@ class GameScreen(Screen):
         with open(settings_path, "r") as f:
             data = json.load(f)
         return data["game_settings"]
-
-    

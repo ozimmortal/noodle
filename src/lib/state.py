@@ -6,8 +6,4 @@ current_dir = Path(__file__).parent
 settings_path = os.path.join(current_dir.parent, "data/settings.json")
 
 
-settings = {
-    "mode": "time",
-    "choice": 30,
-    "language": "english"
-}
+settings = {"mode": "time", "choice": 30, "language": "english"}

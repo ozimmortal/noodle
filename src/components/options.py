@@ -8,12 +8,10 @@ from lib.state import settings_path, settings
 import os, json
 
 
-
 def update_game_setting(key: str, value: str, choice=""):
     settings[key] = value
     if key == "mode":
         settings["choice"] = choice
-
 
 
 class LanguageSelect(Container):
