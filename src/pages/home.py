@@ -8,7 +8,7 @@ from textual.widget import Widget
 from textual.binding import Binding
 from .game import GameScreen
 import json, webbrowser
-from lib.state import settings_path
+from lib.state import settings_path, settings
 
 
 class Button(Widget):

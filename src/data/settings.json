@@ -1,9 +1,4 @@
 {
-    "game_settings": {
-        "mode": "time",
-        "choice": 30,
-        "language": "english"
-    },
     "game_options": {
         "modes": {
             "time": [

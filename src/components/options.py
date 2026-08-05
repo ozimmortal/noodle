@@ -4,23 +4,16 @@ from textual.reactive import reactive
 from textual import events, on
 from textual.widget import Widget
 from textual.message import Message
-from lib.state import settings_path
+from lib.state import settings_path, settings
 import os, json
 
 
+
 def update_game_setting(key: str, value: str, choice=""):
-    try:
-        with open(settings_path, "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        return
-
-    data["game_settings"][key] = value
+    settings[key] = value
     if key == "mode":
-        data["game_settings"]["choice"] = choice
+        settings["choice"] = choice
 
-    with open(settings_path, "w") as f:
-        json.dump(data, f, indent=4)
 
 
 class LanguageSelect(Container):
@@ -350,12 +343,12 @@ class OptionList(Container):
         header.set_class(tab_selected, "selected")
         self._refresh_option_classes()
 
-    def watch_option_selected(self, option_selected: int) -> None:
+    def watch_option_selected(self) -> None:
         if not self.is_mounted:
             return
         self._refresh_option_classes()
 
-    async def watch_current_mode_index(self, current_mode_index: int) -> None:
+    async def watch_current_mode_index(self) -> None:
         if not self.is_mounted:
             return
 
