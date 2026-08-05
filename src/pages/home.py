@@ -8,7 +8,7 @@ from textual.widget import Widget
 from textual.binding import Binding
 from .game import GameScreen
 import json, webbrowser
-from lib.state import settings_path, settings
+from lib.state import settings_path, settings, game_options
 
 
 class Button(Widget):
@@ -54,10 +54,8 @@ class Button(Widget):
 with open(settings_path, "r") as f:
     data = json.load(f)
 
-options = data["game_options"]
-MODES = options["modes"]
-
-AVAILABLE_LANGUAGES = options["languages"]
+MODES = game_options["modes"]
+AVAILABLE_LANGUAGES = game_options["languages"]
 footer_elements = [
     ["tab", "cycle options"],
     ["← →", "change value"],
@@ -86,4 +84,4 @@ class HomeScreen(Screen):
             self.app.push_screen(GameScreen())
 
     def action_redirect_link(self) -> None:
-        webbrowser.open("https://github.com/ozimmortal/belly")
+        webbrowser.open("https://github.com/ozimmortal/noodle")
