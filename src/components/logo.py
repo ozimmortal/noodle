@@ -12,7 +12,7 @@ class BellyLogo(Static):
 class TitleBlock(Vertical):
     def compose(self):
         yield Link(
-            "noodle...", url="https://github.com/ozimmortal/belly", id="app-title"
+            "noodle...", url="https://github.com/ozimmortal/noodle", id="app-title"
         )
         yield Static(f"v{state.APP_VERSION}", id="app-version")
 
