@@ -1,18 +1,25 @@
 from textual.screen import Screen
 from textual.widgets import Static
+from components.footer import Footer
+from components.logo import BrandHeader
+from components.countdown import CountDownBlock
+from components.stopwatch import StopWatch
 from lib.state import settings_path, settings
 import json
 
+FOOTER_ELEMENTS = [
+    ["ctrl+b", "Back"],
+    ["ctrl+q", "quit"],
+]
+
 
 class GameScreen(Screen):
+    def __init__(self, name=None, id=None, classes=None):
+        super().__init__(name, id, classes)
+        self.mode = settings.get("mode")
+        self.choice = settings.get("choice")
+        self.language = settings.get("language")
 
     def compose(self):
-        game_settings = settings
-        yield Static(
-            f"mode - {game_settings["mode"]}\nchoice - {game_settings["choice"]}\nlanguage - {game_settings["language"]}"
-        )
-
-    def get_settings(self):
-        with open(settings_path, "r") as f:
-            data = json.load(f)
-        return data["game_settings"]
+        yield BrandHeader()
+        yield Footer(elements=FOOTER_ELEMENTS)
