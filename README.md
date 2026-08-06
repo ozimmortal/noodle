@@ -1,4 +1,4 @@
-# noodle
+# noodle...
 
 A terminal typing test, inspired by Monkeytype. Built with Python and [Textual](https://textual.textualize.io/).
 
