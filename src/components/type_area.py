@@ -156,7 +156,7 @@ class TypeArea(Widget, can_focus=True):
             start_line_idx = (
                 curr_line_idx - 1
                 if len(self.lines) - curr_line_idx >= 3
-                else start_line_idx
+                else curr_line_idx - 1
             )
 
         end_line_idx = start_line_idx + 3
