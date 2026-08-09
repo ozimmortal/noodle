@@ -48,7 +48,7 @@ class GameScreen(Screen):
             "textual python terminal user interface library"
             "textual python terminal user interface library"
             "textual python terminal user interface library"
-        )
+        )  # replace these by generating random words from the store
         self.words = [Word(w) for w in sample_text.split()]
         self.type_area = TypeArea(self.words)
 
