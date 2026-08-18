@@ -1,4 +1,3 @@
-from textual.widget import Widget
 from textual.widgets import Static, Link
 from textual.containers import Horizontal, Vertical
 from lib import state

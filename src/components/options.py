@@ -1,11 +1,10 @@
 from textual.widgets import Static, Select, Label
-from textual.containers import Horizontal, Vertical, Container
+from textual.containers import Horizontal, Container
 from textual.reactive import reactive
 from textual import events, on
 from textual.widget import Widget
 from textual.message import Message
-from lib.state import settings_path, settings
-import os, json
+from lib.state import settings
 
 
 def update_game_setting(key: str, value: str, choice=""):
