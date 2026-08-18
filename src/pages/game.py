@@ -6,6 +6,7 @@ from components.logo import BrandHeader
 from components.countdown import CountDownBlock
 from components.type_area import TypeArea, Word
 from lib.state import settings_path, settings
+from textual.binding import Binding
 import json
 
 FOOTER_ELEMENTS = [
@@ -33,6 +34,7 @@ class GameScreen(Screen):
     
 """
 
+    BINDINGS = [Binding("ctrl+b", "go_back", "Go Back Home")]
     def __init__(self, name=None, id=None, classes=None):
         super().__init__(name, id, classes)
         self.mode = settings.get("mode")
@@ -58,3 +60,7 @@ class GameScreen(Screen):
             yield CountDownBlock(self.choice)
             yield self.type_area
         yield Footer(elements=FOOTER_ELEMENTS)
+
+    def action_go_back(self) -> None:
+        self.app.pop_screen()
+
