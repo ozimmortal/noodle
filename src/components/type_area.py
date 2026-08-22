@@ -84,7 +84,9 @@ class TypeArea(Widget, can_focus=True):
         if event.key == "backspace":
             if self.curr_char_idx > 0:
                 self.curr_char_idx -= 1
-                current_word.characters[self.curr_char_idx].status = CharacterStatus.UNENTERED
+                current_word.characters[self.curr_char_idx].status = (
+                    CharacterStatus.UNENTERED
+                )
             elif self.curr_word_idx > 0:
                 self.curr_word_idx -= 1
                 prev_word = self.words[self.curr_word_idx]
@@ -173,7 +175,10 @@ class TypeArea(Widget, can_focus=True):
 
                 if word_idx > 0:
                     prev_is_current = (word_counter - 1) == self.curr_word_idx
-                    if prev_is_current and self.curr_char_idx == self.words[word_counter - 1].length:
+                    if (
+                        prev_is_current
+                        and self.curr_char_idx == self.words[word_counter - 1].length
+                    ):
                         result.append(" ", style="reverse blink")
                     else:
                         result.append(" ")

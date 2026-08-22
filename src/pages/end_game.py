@@ -34,7 +34,7 @@ def render_big_number(text: str, color: str) -> str:
     for i in range(5):
         row_str = "  ".join(DIGIT_FONT.get(ch, DIGIT_FONT[" "])[i] for ch in text)
         rows.append(row_str)
-        
+
     body = "\n".join(rows)
     return f"[{color}]{body}[/]"
 
@@ -134,7 +134,9 @@ class EndGameScreen(Screen):
         self.accuracy = accuracy
         self.errors = errors
         self.total_words = total_words
-        self.is_personal_best = is_personal_best # add later to show a badge if this is a personal best
+        self.is_personal_best = (
+            is_personal_best  # add later to show a badge if this is a personal best
+        )
 
     def compose(self) -> ComposeResult:
         yield BrandHeader()
@@ -144,25 +146,37 @@ class EndGameScreen(Screen):
             with Horizontal(id="hero-container"):
                 with Container(classes="hero-stat"):
                     yield Static("wpm", classes="hero-label")
-                    yield Static(render_big_number(str(self.wpm), "bold #e2c27d"), classes="hero-value")
+                    yield Static(
+                        render_big_number(str(self.wpm), "bold #e2c27d"),
+                        classes="hero-value",
+                    )
 
                 with Container(classes="hero-stat"):
                     yield Static("accuracy", classes="hero-label")
                     # Reverted to just the number, no percentage sign
-                    yield Static(render_big_number(str(self.accuracy), "bold #cccccc"), classes="hero-value")
+                    yield Static(
+                        render_big_number(str(self.accuracy), "bold #cccccc"),
+                        classes="hero-value",
+                    )
 
                 with Container(classes="hero-stat"):
                     yield Static("errors", classes="hero-label")
-                    yield Static(render_big_number(str(self.errors), "bold #e26060"), classes="hero-value")
+                    yield Static(
+                        render_big_number(str(self.errors), "bold #e26060"),
+                        classes="hero-value",
+                    )
 
             yield Rule(line_style="solid")
             with Horizontal(id="details-row"):
-                yield Static(f"mode • [#F5C462]{self.test_type}[/]", classes="detail-stat")
+                yield Static(
+                    f"mode • [#F5C462]{self.test_type}[/]", classes="detail-stat"
+                )
                 yield Static(f"time • [#F5C462]{self.time}s[/]", classes="detail-stat")
-                
+
                 words_text = (
                     f"words • [#F5C462]{self.correct_words}/{self.total_words}[/]"
-                    if self.total_words else f"words • [#F5C462]{self.correct_words}[/]"
+                    if self.total_words
+                    else f"words • [#F5C462]{self.correct_words}[/]"
                 )
                 yield Static(words_text, classes="detail-stat")
             if self.is_personal_best:
@@ -172,8 +186,10 @@ class EndGameScreen(Screen):
 
     def action_restart_test(self) -> None:
         from .game import GameScreen
+
         self.app.switch_screen(GameScreen())
 
     def action_go_home(self) -> None:
         from .home import HomeScreen
+
         self.app.switch_screen(HomeScreen())
