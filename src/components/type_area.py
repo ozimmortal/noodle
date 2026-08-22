@@ -77,27 +77,26 @@ class TypeArea(Widget, can_focus=True):
 
     def on_key(self, event: events.Key) -> None:
         if self.curr_word_idx >= len(self.words):
-            return  # post an end game reach message
+            return
 
         current_word = self.words[self.curr_word_idx]
+
         if event.key == "backspace":
             if self.curr_char_idx > 0:
                 self.curr_char_idx -= 1
-                current_word.characters[self.curr_char_idx].status = (
-                    CharacterStatus.UNENTERED
-                )
+                current_word.characters[self.curr_char_idx].status = CharacterStatus.UNENTERED
             elif self.curr_word_idx > 0:
                 self.curr_word_idx -= 1
                 prev_word = self.words[self.curr_word_idx]
-                self.curr_char_idx = len(prev_word.characters)
+                self.curr_char_idx = prev_word.length
 
         elif event.key == "space":
-            if self.curr_char_idx == self.words[self.curr_word_idx].length - 1:
+            if self.curr_char_idx == current_word.length:
                 self.curr_word_idx += 1
                 self.curr_char_idx = 0
 
-        elif event.character and len(event.character) == 1 and event.key != "space":
-            if self.curr_char_idx < len(current_word.characters):
+        elif event.character and len(event.character) == 1:
+            if self.curr_char_idx < current_word.length:
                 char_obj = current_word.characters[self.curr_char_idx]
 
                 if event.character == char_obj.value:
@@ -105,9 +104,14 @@ class TypeArea(Widget, can_focus=True):
                 else:
                     char_obj.status = CharacterStatus.INCORRECT
 
-                self.curr_char_idx += (
-                    1 if self.curr_char_idx < len(current_word.characters) - 1 else 0
-                )
+                self.curr_char_idx += 1
+
+                is_last_word = self.curr_word_idx == len(self.words) - 1
+                is_last_char = self.curr_char_idx == current_word.length
+
+                if is_last_word and is_last_char:
+                    self.post_message(GameEndReached())
+                    self.curr_word_idx += 1
 
     def words_to_lines(self) -> List[List[Word]]:
         width = self.content_size.width or self.container_size.width
@@ -161,14 +165,18 @@ class TypeArea(Widget, can_focus=True):
 
         end_line_idx = start_line_idx + 3
         word_counter = sum(len(line) for line in self.lines[:start_line_idx])
-        acitve_lines = self.lines[start_line_idx:end_line_idx]
+        active_lines = self.lines[start_line_idx:end_line_idx]
 
-        for line_idx, line in enumerate(acitve_lines):
+        for line_idx, line in enumerate(active_lines):
             for word_idx, word in enumerate(line):
-                if word_idx > 0:
-                    result.append(" ")
-
                 is_current_word = word_counter == self.curr_word_idx
+
+                if word_idx > 0:
+                    prev_is_current = (word_counter - 1) == self.curr_word_idx
+                    if prev_is_current and self.curr_char_idx == self.words[word_counter - 1].length:
+                        result.append(" ", style="reverse blink")
+                    else:
+                        result.append(" ")
 
                 for char_idx, ch in enumerate(word.characters):
                     style = self.STATUS_STYLES.get(ch.status, "dim white")
@@ -177,6 +185,10 @@ class TypeArea(Widget, can_focus=True):
                         style += " reverse blink"
 
                     result.append(ch.value, style=style)
+
+                if is_current_word and self.curr_char_idx == word.length:
+                    if word_idx == len(line) - 1 or word_counter == len(self.words) - 1:
+                        result.append(" ", style="reverse blink")
 
                 word_counter += 1
 

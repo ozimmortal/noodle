@@ -1,14 +1,19 @@
 from textual.widgets import Static, Digits
 from textual.message import Message
+from textual.reactive import reactive
+from textual import on
 
 
-class CountDownBlock(Static):
-    class Countdown_Ended(Message):
-        def __init__(self):
-            super().__init__()
+class StopTimer(Message):
+    def __init__(self):
+        super().__init__()
 
+
+class StopWatchBlock(Static):
+
+    ended = reactive(False)
     DEFAULT_CSS = """
-    CountDownBlock {
+    StopWatchBlock {
         height: auto;
         align: center middle;
         content-align: center middle;
@@ -21,14 +26,11 @@ class CountDownBlock(Static):
         text-style: bold;
     }
 
-    Digits.warning {
-        color: #E00324;
-    }
     """
 
-    def __init__(self, seconds: int, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.seconds = seconds
+        self.seconds = 0
 
     def compose(self):
         yield Digits(str(self.seconds), id="clock")
@@ -37,14 +39,14 @@ class CountDownBlock(Static):
         self.set_interval(1.0, self.update_clock)
 
     def update_clock(self) -> None:
-        if self.seconds == 0:
-            self.post_message(self.Countdown_Ended())
+        if self.ended:
             return
 
-        self.seconds -= 1
+        self.seconds += 1
         clock = self.query_one("#clock", Digits)
 
-        if self.seconds < 10:
-            clock.add_class("warning")
-
         clock.update(str(self.seconds))
+
+    @on(StopTimer)
+    def handle_stop_timer(self, msg: StopTimer):
+        ended = True

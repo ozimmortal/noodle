@@ -53,7 +53,7 @@ class Button(Widget):
 
 MODES = game_options["modes"]
 AVAILABLE_LANGUAGES = game_options["languages"]
-footer_elements = [
+FOOTER_ELEMENTS = [
     ["tab", "cycle options"],
     ["← →", "change value"],
     ["ctrl+q", "quit"],
@@ -74,7 +74,7 @@ class HomeScreen(Screen):
             yield Label("press", classes="prompt-text")
             yield Button("space")
             yield Label("to start", classes="prompt-text")
-        yield Footer(elements=footer_elements)
+        yield Footer(elements=FOOTER_ELEMENTS)
 
     def _on_key(self, event):
         if event.key == "space":
